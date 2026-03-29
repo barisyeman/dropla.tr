@@ -2,23 +2,23 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Drop.tr — Ücretsiz Uçtan Uca Dosya Gönderimi',
-  description: 'Drop.tr ile cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. Uçtan uca P2P dosya transferi — hızlı, güvenli, kayıt gerektirmez.',
-  keywords: ['dosya gönder', 'dosya transferi', 'dosya paylaş', 'p2p dosya gönderimi', 'ücretsiz dosya transferi', 'uçtan uca şifreli dosya gönderimi', 'cihazlar arası dosya aktarımı', 'drop.tr'],
+  title: 'Drop.tr — Ücretsiz Dosya Gönder | Şifreli Dosya Transferi',
+  description: 'Dosya gönder, hızlı ve güvenli. Drop.tr ile telefondan bilgisayara veya bilgisayardan telefona ücretsiz dosya transferi yapın. Uçtan uca şifreli, doğrudan cihazdan cihaza.',
+  keywords: ['dosya gönder', 'dosya transferi', 'dosya paylaş', 'telefondan bilgisayara dosya gönder', 'bilgisayardan telefona dosya gönder', 'ücretsiz dosya gönder', 'şifreli dosya transferi', 'dosya aktarma', 'online dosya gönder'],
   authors: [{ name: 'Drop.tr' }],
   robots: 'index, follow',
   openGraph: {
     type: 'website',
     url: 'https://www.drop.tr',
     siteName: 'Drop.tr',
-    title: 'Drop.tr — Ücretsiz Uçtan Uca Dosya Gönderimi',
-    description: 'Cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. P2P uçtan uca dosya transferi.',
+    title: 'Drop.tr — Ücretsiz Dosya Gönder | Şifreli Dosya Transferi',
+    description: 'Dosya gönder, hızlı ve güvenli. Telefondan bilgisayara, bilgisayardan telefona ücretsiz dosya transferi. Uçtan uca şifreli.',
     locale: 'tr_TR',
   },
   twitter: {
     card: 'summary',
-    title: 'Drop.tr — Ücretsiz Uçtan Uca Dosya Gönderimi',
-    description: 'Cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. P2P uçtan uca dosya transferi.',
+    title: 'Drop.tr — Ücretsiz Dosya Gönder',
+    description: 'Dosya gönder, hızlı ve güvenli. Ücretsiz, uçtan uca şifreli dosya transferi.',
     site: '@droptrapp',
   },
   other: {
@@ -49,13 +49,13 @@ export default function RootLayout({
               name: 'Drop.tr',
               url: 'https://www.drop.tr',
               description:
-                'Cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. Uçtan uca P2P dosya transferi.',
+                'Ücretsiz dosya gönder. Telefondan bilgisayara, bilgisayardan telefona hızlı ve şifreli dosya transferi.',
               applicationCategory: 'UtilitiesApplication',
               operatingSystem: 'Web',
               offers: { '@type': 'Offer', price: '0', priceCurrency: 'TRY' },
               inLanguage: 'tr',
               isAccessibleForFree: true,
-              keywords: 'dosya gönder, dosya transferi, p2p dosya gönderimi, ücretsiz dosya transferi, uçtan uca şifreli dosya',
+              keywords: 'dosya gönder, dosya transferi, dosya paylaş, ücretsiz dosya gönder, şifreli dosya transferi, online dosya gönder',
             }),
           }}
         />
