@@ -2,22 +2,23 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Drop.tr — Ücretsiz & Güvenli Dosya Paylaşımı | Kayıtsız, Sunucusuz',
-  description: 'Drop.tr ile dosyalarınızı anında, ücretsiz ve güvenli şekilde paylaşın. Kayıt gerekmez, sunucuya yüklenmez — dosya doğrudan cihazdan cihaza gider. Tamamen ücretsiz, reklamsız.',
+  title: 'Drop.tr — Ücretsiz Uçtan Uca Dosya Gönderimi',
+  description: 'Drop.tr ile cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. Uçtan uca P2P dosya transferi — hızlı, güvenli, kayıt gerektirmez.',
+  keywords: ['dosya gönder', 'dosya transferi', 'dosya paylaş', 'p2p dosya gönderimi', 'ücretsiz dosya transferi', 'uçtan uca şifreli dosya gönderimi', 'cihazlar arası dosya aktarımı', 'drop.tr'],
   authors: [{ name: 'Drop.tr' }],
   robots: 'index, follow',
   openGraph: {
     type: 'website',
     url: 'https://www.drop.tr',
     siteName: 'Drop.tr',
-    title: 'Drop.tr — Ücretsiz & Güvenli Dosya Paylaşımı',
-    description: 'Kayıt yok, sunucu yok, reklam yok. Dosyanız doğrudan cihazdan cihaza gider. Tamamen ücretsiz, kar amacı gütmez.',
+    title: 'Drop.tr — Ücretsiz Uçtan Uca Dosya Gönderimi',
+    description: 'Cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. P2P uçtan uca dosya transferi.',
     locale: 'tr_TR',
   },
   twitter: {
     card: 'summary',
-    title: 'Drop.tr — Ücretsiz & Güvenli Dosya Paylaşımı',
-    description: 'Kayıt yok, sunucu yok, reklam yok. Dosyanız doğrudan cihazdan cihaza gider. Tamamen ücretsiz.',
+    title: 'Drop.tr — Ücretsiz Uçtan Uca Dosya Gönderimi',
+    description: 'Cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. P2P uçtan uca dosya transferi.',
     site: '@droptrapp',
   },
   other: {
@@ -48,13 +49,13 @@ export default function RootLayout({
               name: 'Drop.tr',
               url: 'https://www.drop.tr',
               description:
-                'Ücretsiz, güvenli ve kayıtsız dosya paylaşımı. Dosyalar doğrudan cihazdan cihaza aktarılır, hiçbir sunucuya yüklenmez.',
+                'Cihazlar arasında ücretsiz, şifreli ve doğrudan dosya gönderin. Uçtan uca P2P dosya transferi.',
               applicationCategory: 'UtilitiesApplication',
               operatingSystem: 'Web',
               offers: { '@type': 'Offer', price: '0', priceCurrency: 'TRY' },
               inLanguage: 'tr',
               isAccessibleForFree: true,
-              keywords: 'dosya paylaşımı, güvenli transfer, p2p, ücretsiz',
+              keywords: 'dosya gönder, dosya transferi, p2p dosya gönderimi, ücretsiz dosya transferi, uçtan uca şifreli dosya',
             }),
           }}
         />
