@@ -1,17 +1,16 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const path = require('path');
 const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
+
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 const io = new Server(server, {
   maxHttpBufferSize: 1e8,
-  cors: { origin: '*' }
+  cors: { origin: CORS_ORIGIN }
 });
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Blocked file extensions (potential malware)
 const BLOCKED_EXTENSIONS = [
@@ -61,7 +60,7 @@ io.on('connection', (socket) => {
     currentRoom = roomId;
 
     const fullInfo = { ...peerInfo, id: socket.id, ip: clientIP };
-    
+
     if (!rooms.has(roomId)) rooms.set(roomId, new Map());
     rooms.get(roomId).set(socket.id, fullInfo);
     socket.join(roomId);
@@ -203,7 +202,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Backend running on http://localhost:${PORT}`);
 });

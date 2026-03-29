@@ -1,7 +1,7 @@
 {
-  "name": "airdrop-transfer",
+  "name": "drop-tr-backend",
   "version": "1.0.0",
-  "description": "P2P file transfer via WebRTC",
+  "description": "Drop.tr P2P file transfer backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
