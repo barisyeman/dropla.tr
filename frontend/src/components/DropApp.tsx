@@ -618,8 +618,22 @@ export default function DropApp() {
     };
 
     (window as any).__sendFileRequest = () => {
-      if (!targetPeerIdRef.current || !selectedFilesRef.current.length) return;
-      socket.emit('file-request', {
+      console.log('[Dropla.tr] sendFileRequest called', {
+        targetPeerId: targetPeerIdRef.current,
+        filesCount: selectedFilesRef.current.length,
+        socketConnected: socketRef.current?.connected,
+      });
+      if (!targetPeerIdRef.current || !selectedFilesRef.current.length) {
+        console.warn('[Dropla.tr] sendFileRequest early return - no target or no files');
+        return;
+      }
+      const s = socketRef.current;
+      if (!s || !s.connected) {
+        console.error('[Dropla.tr] Socket not connected!');
+        showToast('Bağlantı hatası, sayfayı yenileyin');
+        return;
+      }
+      s.emit('file-request', {
         to: targetPeerIdRef.current,
         files: selectedFilesRef.current.map(f => ({ name: f.name, size: f.size, type: f.type })),
         senderName: deviceNameRef.current,
