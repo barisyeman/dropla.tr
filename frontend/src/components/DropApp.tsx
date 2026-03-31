@@ -495,7 +495,8 @@ export default function DropApp() {
       if (icon) icon.innerHTML = dark ? sunIcon : moonIcon;
     }
 
-    const savedDark = localStorage.getItem('dark') === '1';
+    const stored = localStorage.getItem('dark');
+    const savedDark = stored === '1' || (stored === null && window.matchMedia('(prefers-color-scheme:dark)').matches);
     applyDark(savedDark);
 
     (window as any).__toggleDark = () => {

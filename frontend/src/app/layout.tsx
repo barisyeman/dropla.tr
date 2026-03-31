@@ -60,7 +60,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <script dangerouslySetInnerHTML={{ __html: `try{if(localStorage.getItem('dark')==='1')document.documentElement.classList.add('dark')}catch(e){}` }} />
+        <script dangerouslySetInnerHTML={{ __html: `try{var d=localStorage.getItem('dark');if(d==='1'||(d===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}` }} />
         {children}
       </body>
     </html>
