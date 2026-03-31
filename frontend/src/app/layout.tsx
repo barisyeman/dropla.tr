@@ -2,21 +2,21 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Drop.tr — Ücretsiz Uçtan Uca Şifreli Dosya Gönderimi',
-  description: 'Drop.tr ile dosyalarınızı cihazlar arasında anında gönderin. Dosyalar herhangi bir sunucuya yüklenmez, doğrudan karşı cihaza uçtan uca şifreli olarak iletilir. Telefon, tablet ve bilgisayar arasında çalışır.',
-  authors: [{ name: 'Drop.tr' }],
+  title: 'Dropla.tr — Ücretsiz Uçtan Uca Şifreli Dosya Gönderimi',
+  description: 'Dropla.tr ile dosyalarınızı cihazlar arasında anında gönderin. Dosyalar herhangi bir sunucuya yüklenmez, doğrudan karşı cihaza uçtan uca şifreli olarak iletilir. Telefon, tablet ve bilgisayar arasında çalışır.',
+  authors: [{ name: 'Dropla.tr' }],
   robots: 'index, follow',
   openGraph: {
     type: 'website',
-    url: 'https://www.drop.tr',
-    siteName: 'Drop.tr',
-    title: 'Drop.tr — Ücretsiz Uçtan Uca Şifreli Dosya Gönderimi',
+    url: 'https://www.dropla.tr',
+    siteName: 'Dropla.tr',
+    title: 'Dropla.tr — Ücretsiz Uçtan Uca Şifreli Dosya Gönderimi',
     description: 'Dosyalarınızı cihazlar arasında anında gönderin. Sunucuya yüklenmez, doğrudan karşı cihaza uçtan uca şifreli olarak iletilir.',
     locale: 'tr_TR',
   },
   twitter: {
     card: 'summary',
-    title: 'Drop.tr — Ücretsiz Uçtan Uca Şifreli Dosya Gönderimi',
+    title: 'Dropla.tr — Ücretsiz Uçtan Uca Şifreli Dosya Gönderimi',
     description: 'Dosyalarınızı cihazlar arasında anında gönderin. Sunucuya yüklenmez, doğrudan karşı cihaza uçtan uca şifreli olarak iletilir.',
     site: '@droptrapp',
   },
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
-        <link rel="canonical" href="https://www.drop.tr" />
+        <link rel="canonical" href="https://www.dropla.tr" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
@@ -45,8 +45,8 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebApplication',
-              name: 'Drop.tr',
-              url: 'https://www.drop.tr',
+              name: 'Dropla.tr',
+              url: 'https://www.dropla.tr',
               description:
                 'Dosyalarınızı cihazlar arasında anında gönderin. Sunucuya yüklenmez, uçtan uca şifreli olarak iletilir.',
               applicationCategory: 'UtilitiesApplication',

@@ -483,14 +483,14 @@ export default function DropApp() {
 
   // ─── Init ───
   useEffect(() => {
-    console.log('[Drop.tr] useEffect fired');
+    console.log('[Dropla.tr] useEffect fired');
 
     // Load QRious if not already loaded
     if (!document.querySelector('script[src*="qrious"]')) {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
       script.onload = () => {
-        console.log('[Drop.tr] QRious loaded');
+        console.log('[Dropla.tr] QRious loaded');
         if (roomIdRef.current) updateLink();
       };
       document.head.appendChild(script);
@@ -505,12 +505,12 @@ export default function DropApp() {
     const navName = document.getElementById('navDevName');
     if (navName) navName.textContent = d.defaultName;
 
-    console.log('[Drop.tr] Connecting to backend:', BACKEND_URL);
+    console.log('[Dropla.tr] Connecting to backend:', BACKEND_URL);
     const socket = io(BACKEND_URL);
     socketRef.current = socket;
 
-    socket.on('connect', () => console.log('[Drop.tr] Socket connected:', socket.id));
-    socket.on('connect_error', (err) => console.error('[Drop.tr] Socket connection error:', err.message));
+    socket.on('connect', () => console.log('[Dropla.tr] Socket connected:', socket.id));
+    socket.on('connect_error', (err) => console.error('[Dropla.tr] Socket connection error:', err.message));
 
     const r = new URLSearchParams(window.location.search).get('room');
 
@@ -675,7 +675,7 @@ export default function DropApp() {
     };
 
     return () => {
-      console.log('[Drop.tr] Cleanup - disconnecting socket');
+      console.log('[Dropla.tr] Cleanup - disconnecting socket');
       socket.disconnect();
       socketRef.current = null;
     };
@@ -690,7 +690,7 @@ export default function DropApp() {
           <div className="nav-logo">
             <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
           </div>
-          <span className="nav-title">Drop.tr</span>
+          <span className="nav-title">Dropla.tr</span>
         </div>
         <div className="nav-right">
           <div className="nav-device" onClick={() => (window as any).__toggleNameEdit()}>

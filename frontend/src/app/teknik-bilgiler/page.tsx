@@ -4,8 +4,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Teknik Bilgiler — Drop.tr',
-  description: 'Drop.tr teknik altyapısı hakkında bilgi edinin. P2P dosya transferi, şifreleme ve güvenlik.',
+  title: 'Teknik Bilgiler — Dropla.tr',
+  description: 'Dropla.tr teknik altyapısı hakkında bilgi edinin. P2P dosya transferi, şifreleme ve güvenlik.',
 };
 
 export default function TeknikPage() {
@@ -20,7 +20,7 @@ export default function TeknikPage() {
 
         <h1 className="page-title">Teknik Bilgiler</h1>
         <p className="page-desc">
-          Drop.tr&apos;nin dosya transferi sırasında kullandığı teknolojiler ve güvenlik yaklaşımı hakkında genel bilgiler.
+          Dropla.tr&apos;nin dosya transferi sırasında kullandığı teknolojiler ve güvenlik yaklaşımı hakkında genel bilgiler.
         </p>
 
         <div className="section-title">
@@ -30,7 +30,7 @@ export default function TeknikPage() {
 
         <div className="card">
           <h3>Eşler Arası (P2P) Bağlantı</h3>
-          <p>Drop.tr, dosyaları bir sunucuya yüklemek yerine doğrudan iki cihaz arasında aktarır. Sunucu yalnızca iki cihazın birbirini bulması için aracılık eder — dosya içeriği sunucu üzerinden geçmez. Bağlantı kurulduktan sonra tüm veri akışı doğrudan cihazlar arasında gerçekleşir.</p>
+          <p>Dropla.tr, dosyaları bir sunucuya yüklemek yerine doğrudan iki cihaz arasında aktarır. Sunucu yalnızca iki cihazın birbirini bulması için aracılık eder — dosya içeriği sunucu üzerinden geçmez. Bağlantı kurulduktan sonra tüm veri akışı doğrudan cihazlar arasında gerçekleşir.</p>
         </div>
 
         <div className="card">
@@ -94,7 +94,7 @@ export default function TeknikPage() {
 
         <div className="highlight-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <p><strong>Uyumluluk:</strong> Drop.tr, WebRTC destekleyen tüm modern tarayıcılarda çalışır. Chrome, Firefox, Safari ve Edge&apos;in güncel sürümleri tam olarak desteklenmektedir. Uygulama kurulumu gerekmez.</p>
+          <p><strong>Uyumluluk:</strong> Dropla.tr, WebRTC destekleyen tüm modern tarayıcılarda çalışır. Chrome, Firefox, Safari ve Edge&apos;in güncel sürümleri tam olarak desteklenmektedir. Uygulama kurulumu gerekmez.</p>
         </div>
       </div>
       <Footer />

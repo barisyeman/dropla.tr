@@ -9,7 +9,7 @@ export default function SubPageNavbar() {
         <div className="nav-logo">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </div>
-        <span className="nav-title">Drop.tr</span>
+        <span className="nav-title">Dropla.tr</span>
       </Link>
       <div className="nav-right">
         <Link href="/" style={{ textDecoration: 'none' }}>

@@ -4,8 +4,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'İletişim — Drop.tr',
-  description: 'Drop.tr ile iletişime geçin.',
+  title: 'İletişim — Dropla.tr',
+  description: 'Dropla.tr ile iletişime geçin.',
 };
 
 export default function IletisimPage() {
@@ -20,7 +20,7 @@ export default function IletisimPage() {
 
         <h1 className="page-title">İletişim</h1>
         <p className="page-desc">
-          Drop.tr ile ilgili soru, öneri veya geri bildirimleriniz için bize ulaşabilirsiniz.
+          Dropla.tr ile ilgili soru, öneri veya geri bildirimleriniz için bize ulaşabilirsiniz.
         </p>
 
         <div className="card">
@@ -29,15 +29,15 @@ export default function IletisimPage() {
           </div>
           <h3>E-posta</h3>
           <p>Bize her konuda e-posta ile ulaşabilirsiniz. En kısa sürede dönüş yapılacaktır.</p>
-          <a href="mailto:info@drop.tr" className="mail-link" style={{ marginTop: 16, display: 'inline-flex' }}>
+          <a href="mailto:info@dropla.tr" className="mail-link" style={{ marginTop: 16, display: 'inline-flex' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            info@drop.tr
+            info@dropla.tr
           </a>
         </div>
 
         <div className="highlight-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <p><strong>Not:</strong> Drop.tr gönüllüler tarafından geliştirilen, kar amacı gütmeyen bir projedir. Yanıt süreleri değişkenlik gösterebilir.</p>
+          <p><strong>Not:</strong> Dropla.tr gönüllüler tarafından geliştirilen, kar amacı gütmeyen bir projedir. Yanıt süreleri değişkenlik gösterebilir.</p>
         </div>
       </div>
       <Footer />

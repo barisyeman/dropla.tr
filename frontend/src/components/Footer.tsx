@@ -8,15 +8,15 @@ export default function Footer() {
       <div className="footer-free-card">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <div>
-          <h4>Drop.tr tamamen ücretsizdir</h4>
-          <p>Hiçbir ticari kaygı, reklam veya gizli ücret yoktur. Drop.tr, dosya paylaşımının herkes için erişilebilir, hızlı ve güvenli olması gerektiğine inanan gönüllüler tarafından geliştirilmektedir.</p>
+          <h4>Dropla.tr tamamen ücretsizdir</h4>
+          <p>Hiçbir ticari kaygı, reklam veya gizli ücret yoktur. Dropla.tr, dosya paylaşımının herkes için erişilebilir, hızlı ve güvenli olması gerektiğine inanan gönüllüler tarafından geliştirilmektedir.</p>
         </div>
       </div>
       <div className="footer-top">
         <div className="footer-brand">
           <div className="footer-logo">
             <div className="footer-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
-            <span className="footer-logo-name">Drop.tr</span>
+            <span className="footer-logo-name">Dropla.tr</span>
           </div>
           <p className="footer-tagline">Sunucusuz, kayıtsız, reklamsız. Dosyanız sadece sizinle alıcı arasında uçtan uca şifreli bir şekilde gider.</p>
           <div className="footer-free-badge">
@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span className="footer-bottom-left">&copy; 2026 Drop.tr — Tüm hakları saklıdır</span>
+        <span className="footer-bottom-left">&copy; 2026 Dropla.tr — Tüm hakları saklıdır</span>
         <span className="footer-bottom-right">Türkiye 🇹🇷</span>
       </div>
     </footer>
