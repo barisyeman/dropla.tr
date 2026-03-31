@@ -7,7 +7,14 @@
   --solid:#fff;
   --f:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
 }
-html,body{font-family:var(--f);background:var(--bg);color:var(--black);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html.dark{
+  --bg:#1c1c1e;--black:#f5f5f7;--blue:#0a84ff;--blue-h:#409cff;
+  --blue-l:rgba(10,132,255,.15);
+  --g1:#2c2c2e;--g2:#3a3a3c;--g3:#48484a;--g6:#98989d;--g7:#aeaeb2;
+  --green:#30d158;--red:#ff453a;--orange:#ff9f0a;
+  --solid:#2c2c2e;
+}
+html,body{font-family:var(--f);background:var(--bg);color:var(--black);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .3s,color .3s}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -78,7 +85,8 @@ html,body{font-family:var(--f);background:var(--bg);color:var(--black);min-heigh
   position:sticky;top:0;z-index:100;
   background:rgba(244,245,249,.82);
   backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
-  border-bottom:1px solid rgba(0,0,0,.06);
+  border-bottom:1px solid rgba(128,128,128,.12);
+  transition:background .3s;
   padding:0 28px;height:56px;
   display:flex;align-items:center;justify-content:space-between;
   animation:fadeIn .6s ease both;
@@ -93,6 +101,27 @@ html,body{font-family:var(--f);background:var(--bg);color:var(--black);min-heigh
 .nav-device .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
 .nav-device-icon{width:26px;height:26px;border-radius:50%;background:linear-gradient(145deg,#007aff,#5ac8fa);display:flex;align-items:center;justify-content:center}
 .nav-device-icon svg{width:13px;height:13px}
+
+.dark-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--g2);background:var(--solid);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dark-toggle:hover{border-color:var(--blue);background:var(--blue-l)}
+.dark-toggle:active{transform:scale(.9)}
+.dark-toggle svg{width:18px;height:18px;color:var(--g7);transition:color .2s}
+.dark-toggle:hover svg{color:var(--blue)}
+
+html.dark .navbar{background:rgba(28,28,30,.85)}
+html.dark .share-panel{border-color:rgba(255,255,255,.06)}
+html.dark .peer-card{box-shadow:0 2px 12px rgba(0,0,0,.15)}
+html.dark .peer-card::before{background:linear-gradient(135deg,rgba(10,132,255,.06),transparent)}
+html.dark .feature-card{border-color:rgba(255,255,255,.06);box-shadow:0 1px 8px rgba(0,0,0,.12)}
+html.dark .sheet{box-shadow:0 24px 80px rgba(0,0,0,.4)}
+html.dark .overlay{background:rgba(0,0,0,.55)}
+html.dark .tf-overlay{background:rgba(0,0,0,.6)}
+html.dark .tap-card{box-shadow:0 24px 80px rgba(0,0,0,.4)}
+html.dark .tf-box{box-shadow:0 24px 80px rgba(0,0,0,.4)}
+html.dark .footer-free-card{border-color:rgba(10,132,255,.2)}
+html.dark .file-entry.blocked{background:rgba(255,59,48,.1);border-color:rgba(255,59,48,.3)}
+html.dark .toast{background:var(--g1);color:var(--black)}
+html.dark .drop-zone{border-color:var(--g3)}
 
 .name-edit-bar{display:none;align-items:center;gap:8px;padding:10px 28px;background:var(--solid);border-bottom:1px solid var(--g2);animation:fadeIn .2s ease}
 .name-edit-bar.open{display:flex}
