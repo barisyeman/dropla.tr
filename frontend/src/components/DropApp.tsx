@@ -850,7 +850,7 @@ export default function DropApp() {
           <div className="file-list" id="fileList"></div>
           <div className="sheet-actions">
             <button className="btn-a ba-cancel" onClick={() => (window as any).__closeSendModal()}>İptal</button>
-            <button className="btn-a ba-send" id="sendBtn" disabled onClick={() => (window as any).__sendFileRequest()}>Gönder</button>
+            <button className="btn-a ba-send" id="sendBtn" onClick={() => (window as any).__sendFileRequest()}>Gönder</button>
           </div>
         </div></div>
       </div>
