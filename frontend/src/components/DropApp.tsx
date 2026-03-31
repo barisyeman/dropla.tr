@@ -429,7 +429,7 @@ export default function DropApp() {
     const peers = peersRef.current;
     if (peers.size > 0) { cnt.style.display = ''; cnt.textContent = String(peers.size); } else { cnt.style.display = 'none'; }
     if (!peers.size) {
-      el.innerHTML = `<div class="peers-empty-state"><div class="radar"><div class="radar-circle"></div><div class="radar-circle"></div><div class="radar-circle"></div><div class="radar-circle"></div><div class="radar-center"></div><div class="radar-sweep"></div><div class="floating-dot fd1"></div><div class="floating-dot fd2"></div><div class="floating-dot fd3"></div></div><div class="empty-title">Cihaz aranıyor...</div><div className="empty-desc">Paylaşım linkini göndererek veya QR kodu okutarak başka cihazları bağlayın</div></div>`;
+      el.innerHTML = `<div class="peers-empty-state"><div class="radar"><div class="radar-circle"></div><div class="radar-circle"></div><div class="radar-circle"></div><div class="radar-circle"></div><div class="radar-center"></div><div class="radar-sweep"></div><div class="floating-dot fd1"></div><div class="floating-dot fd2"></div><div class="floating-dot fd3"></div></div><div class="empty-title">Cihaz aranıyor...</div><div class="empty-desc">Paylaşım linkini göndererek veya QR kodu okutarak başka cihazları bağlayın</div></div>`;
       return;
     }
     el.innerHTML = '<div class="peer-grid">' + Array.from(peers.values()).map(p => renderPeerCard(p, false)).join('') + '</div>';
@@ -756,8 +756,8 @@ export default function DropApp() {
                 <div className="radar-center"></div><div className="radar-sweep"></div>
                 <div className="floating-dot fd1"></div><div className="floating-dot fd2"></div><div className="floating-dot fd3"></div>
               </div>
-              <div className="empty-title">Cihaz araniyor...</div>
-              <div className="empty-desc">Paylasim linkini gondererek veya QR kodu okutarak baska cihazlari baglayin</div>
+              <div className="empty-title">Cihaz aranıyor...</div>
+              <div className="empty-desc">Paylaşım linkini göndererek veya QR kodu okutarak başka cihazları bağlayın</div>
             </div>
           </div>
         </div>
