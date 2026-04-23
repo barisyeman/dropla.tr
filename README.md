@@ -75,7 +75,7 @@ CORS_ORIGIN=*
 | Servis | Domain |
 |--------|--------|
 | Frontend | `www.dropla.tr` |
-| Backend (Socket.IO) | `wss.drop.latr` |
+| Backend (Socket.IO) | `wss.dropla.tr` |
 
 ## Teknolojiler
 
