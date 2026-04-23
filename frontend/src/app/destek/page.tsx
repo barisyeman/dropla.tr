@@ -47,6 +47,14 @@ export default function DestekPage() {
           <p>Dropla.tr&apos;nin daha hızlı ve stabil çalışması için sunucu kaynaklarına ihtiyaç duyulmaktadır. Sunucu sponsorluğu için <a href="mailto:info@dropla.tr">info@dropla.tr</a> adresiyle iletişime geçebilirsiniz.</p>
         </div>
 
+        <div className="card">
+          <div className="card-icon" style={{ background: 'linear-gradient(145deg, rgba(36,41,47,.12), rgba(27,31,35,.12))' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#24292f' }}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </div>
+          <h3>Açık Kaynak Katkısı</h3>
+          <p>Dropla.tr artık açık kaynak kodlu bir projedir! Kodları incelemek, hata bildirmek veya yeni özellikler eklemek için <a href="https://github.com/barisyeman/dropla.tr" target="_blank" rel="noopener noreferrer">GitHub sayfamızı</a> ziyaret edebilirsiniz.</p>
+        </div>
+
         <div className="highlight-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <p><strong>Teşekkürler!</strong> Dropla.tr&apos;yi kullanan ve paylaşan herkes bu projenin bir parçasıdır.</p>
