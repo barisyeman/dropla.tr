@@ -2,7 +2,7 @@
 
 Ücretsiz, güvenli ve kayıtsız dosya paylaşım platformu. Dosyalar doğrudan cihazdan cihaza aktarılır — hiçbir sunucuya yüklenmez.
 
-🔗 **[www.drop.tr](https://www.drop.tr)**
+🔗 **[www.drop.tr](https://www.dropla.tr)**
 
 ---
 
@@ -18,7 +18,7 @@
 ## Proje Yapısı
 
 ```
-drop.tr/
+dropla.tr/
 ├── backend/          # Express + Socket.IO sunucusu
 │   ├── server.js     # Sinyal sunucusu ve oda yönetimi
 │   └── package.json
@@ -74,8 +74,8 @@ CORS_ORIGIN=*
 
 | Servis | Domain |
 |--------|--------|
-| Frontend | `www.drop.tr` |
-| Backend (Socket.IO) | `wss.drop.tr` |
+| Frontend | `www.dropla.tr` |
+| Backend (Socket.IO) | `wss.drop.latr` |
 
 ## Teknolojiler
 
@@ -87,5 +87,4 @@ CORS_ORIGIN=*
 | **Şifreleme** | DTLS (tarayıcı yerleşik) |
 
 ## Lisans
-
-Tüm hakları saklıdır. © 2026 Drop.tr
+MIT
