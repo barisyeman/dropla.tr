@@ -1,7 +1,12 @@
 import type { NextConfig } from 'next';
+import path from 'node:path';
 
 const nextConfig: NextConfig = {
-  // Proxy Socket.IO requests to backend in development
+  // Pin Turbopack to this folder so it doesn't get confused by stray lockfiles
+  // higher up the directory tree (e.g. in the user home dir on Windows).
+  turbopack: {
+    root: path.join(__dirname),
+  },
 };
 
 export default nextConfig;

@@ -8,7 +8,13 @@ import Footer from './Footer';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
 const BLOCKED_EXT = ['exe','bat','cmd','com','msi','scr','pif','vbs','vbe','js','jse','wsf','wsh','ps1','ps2','psc1','psc2','msh','msh1','msh2','inf','reg','rgs','sct','shb','shs','ws','lnk','cpl','hta','dll','sys','drv','ocx','cgi','sh','bash','shell','command','action','bin','osx','workflow','app','ipa','apk','deb','rpm'];
 const ICE = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
-const CHUNK = 262144;
+// Chunk sizing — picked to be safe across browsers (iOS Safari historically caps SCTP messages near 64KB).
+// Actual size is renegotiated at runtime from pc.sctp.maxMessageSize when available.
+const CHUNK_DEFAULT = 65536;        // 64 KB — safe baseline
+const CHUNK_MIN = 16384;            // 16 KB — last-resort fallback
+const BUFFER_HIGH = 1024 * 1024;    // pause sender when bufferedAmount climbs above 1 MB
+const BUFFER_LOW = 256 * 1024;      // resume when it drains below 256 KB
+const ACK_TIMEOUT_MS = 30_000;      // give up on per-file ACK after 30s (assume ok rather than hang)
 
 interface PeerInfo {
   id: string;
@@ -97,6 +103,33 @@ function esc(t: string) {
   return d.innerHTML;
 }
 
+// CRC32 — incremental file integrity. Tiny, fast, runs while we're already touching the bytes.
+const CRC32_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[i] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32Update(crc: number, buf: ArrayBuffer): number {
+  const view = new Uint8Array(buf);
+  let c = (crc ^ 0xFFFFFFFF) >>> 0;
+  for (let i = 0; i < view.length; i++) {
+    c = (CRC32_TABLE[(c ^ view[i]) & 0xFF] ^ (c >>> 8)) >>> 0;
+  }
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+// iPadOS 13+ reports as Mac with touch — needs the maxTouchPoints check
+function isIOS() {
+  if (typeof navigator === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (/Mac/.test(navigator.userAgent) && (navigator.maxTouchPoints || 0) > 1);
+}
+
 // ─── Main Component ───
 export default function DropApp() {
   // Refs for mutable state that doesn't need re-renders
@@ -111,8 +144,17 @@ export default function DropApp() {
   const pendingRequestRef = useRef<FileRequest | null>(null);
   const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
   const dataChannelsRef = useRef<Map<string, RTCDataChannel>>(new Map());
-  const receivingBuffersRef = useRef<Record<string, ArrayBuffer[]>>({});
-  const receivingMetaRef = useRef<Record<string, { name: string; size: number; mimeType: string; index: number; total: number }>>({});
+  const receivingBuffersRef = useRef<Record<number, ArrayBuffer[]>>({});
+  const receivingMetaRef = useRef<Record<number, { name: string; size: number; mimeType: string; index: number; total: number; crc?: number }>>({});
+  // Tracks which file index is currently being received on the data channel.
+  // Replaces the previous Object.keys().pop() trick which was non-deterministic.
+  const currentRecvIndexRef = useRef<number>(-1);
+  const recvCrcRef = useRef<Record<number, number>>({});
+  const recvBytesRef = useRef<Record<number, number>>({});
+  // Per-file ACK promise resolvers — sender waits for these before moving to the next file.
+  const sendAckResolversRef = useRef<Map<number, (ok: boolean) => void>>(new Map());
+  // Negotiated chunk size — set when the data channel opens, based on pc.sctp.maxMessageSize.
+  const chunkSizeRef = useRef<number>(CHUNK_DEFAULT);
   const sendQueueRef = useRef<File[]>([]);
   const myDeviceInfoRef = useRef({ type: 'desktop', deviceType: 'desktop', deviceName: 'Ben', browser: '', os: '' });
   const targetDeviceInfoRef = useRef({ type: 'desktop', deviceType: 'desktop', deviceName: 'Alıcı' });
@@ -271,11 +313,26 @@ export default function DropApp() {
   // ─── WebRTC ───
   const setupDC = useCallback((ch: RTCDataChannel, pid: string) => {
     ch.binaryType = 'arraybuffer';
+    ch.bufferedAmountLowThreshold = BUFFER_LOW;
     dataChannelsRef.current.set(pid, ch);
     ch.onopen = () => {
+      // Discover SCTP max message size for optimal chunking. Stay well below the cap;
+      // some implementations get flaky right at the limit.
+      const pc = peerConnectionsRef.current.get(pid);
+      // sctp is non-standard typing in some TS lib versions — fall back gracefully
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const maxMsg = (pc as any)?.sctp?.maxMessageSize ?? 0;
+      if (maxMsg > 0) {
+        chunkSizeRef.current = Math.max(CHUNK_MIN, Math.min(CHUNK_DEFAULT, maxMsg - 4096));
+      } else {
+        chunkSizeRef.current = CHUNK_DEFAULT;
+      }
+      console.log('[Dropla.tr] DC open, chunk size:', chunkSizeRef.current, 'sctp max:', maxMsg);
       if (sendQueueRef.current.length) processSendFn(pid);
     };
-    ch.onmessage = (e) => handleDataFn(e.data);
+    ch.onmessage = (e) => handleDataFn(e.data, pid);
+    ch.onerror = (e) => console.error('[Dropla.tr] DataChannel error:', e);
+    ch.onclose = () => console.log('[Dropla.tr] DataChannel closed:', pid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -287,9 +344,19 @@ export default function DropApp() {
       if (e.candidate) socketRef.current?.emit('rtc-ice-candidate', { to: pid, candidate: e.candidate });
     };
     pc.ondatachannel = (e) => setupDC(e.channel, pid);
-    if (init) setupDC(pc.createDataChannel('ft', { ordered: true, maxRetransmits: 30 }), pid);
+    pc.oniceconnectionstatechange = () => {
+      const s = pc.iceConnectionState;
+      console.log('[Dropla.tr] ICE state:', s, 'for', pid);
+      if (s === 'failed') {
+        showToast('Bağlantı kurulamadı — aynı ağda olduğunuzdan emin olun');
+      }
+    };
+    // ordered + reliable (default). The previous { maxRetransmits: 30 } made the channel
+    // *unreliable* per spec — packets were silently dropped after 30 retries on lossy
+    // mobile/cellular links, which is what was corrupting iPhone transfers.
+    if (init) setupDC(pc.createDataChannel('ft', { ordered: true }), pid);
     return pc;
-  }, [setupDC]);
+  }, [setupDC, showToast]);
 
   const cleanPC = useCallback((pid: string) => {
     const pc = peerConnectionsRef.current.get(pid);
@@ -326,22 +393,34 @@ export default function DropApp() {
 
   // ─── Download file ───
   const dlFile = useCallback((blob: Blob, name: string) => {
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.download = name;
+    a.rel = 'noopener';
+    // iOS Safari quirks: anchor must be in DOM, and target=_blank helps trigger preview/share for unknown types.
+    if (isIOS()) a.target = '_blank';
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(a.href);
+    document.body.removeChild(a);
+    // Critically: do NOT revoke immediately. iOS Safari needs the URL alive until the
+    // download/preview actually starts — revoking too soon corrupts or cancels the file.
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, []);
 
   // ─── Handle incoming data ───
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  function handleDataFn(data: string | ArrayBuffer) {
+  function handleDataFn(data: string | ArrayBuffer, pid: string) {
     if (typeof data === 'string') {
       const m = JSON.parse(data);
       if (m.type === 'file-meta') {
-        receivingMetaRef.current[m.index] = m;
-        receivingBuffersRef.current[m.index] = [];
-        if (m.index === 0) {
+        const idx: number = m.index;
+        receivingMetaRef.current[idx] = m;
+        receivingBuffersRef.current[idx] = [];
+        recvCrcRef.current[idx] = 0;
+        recvBytesRef.current[idx] = 0;
+        currentRecvIndexRef.current = idx;
+        if (idx === 0) {
           const st = document.getElementById('tapStatus');
           if (st) st.textContent = 'Alınıyor...';
           showProgress();
@@ -351,55 +430,132 @@ export default function DropApp() {
         const tt = document.getElementById('transferTitle');
         if (tt) tt.textContent = `${m.name} alınıyor...`;
       } else if (m.type === 'file-end') {
-        const meta = receivingMetaRef.current[m.index];
-        const blob = new Blob(receivingBuffersRef.current[m.index], { type: meta.mimeType });
-        dlFile(blob, meta.name);
-        delete receivingBuffersRef.current[m.index];
-        delete receivingMetaRef.current[m.index];
+        const idx: number = m.index;
+        const meta = receivingMetaRef.current[idx];
+        const chunks = receivingBuffersRef.current[idx] || [];
+        const localCrc = recvCrcRef.current[idx] ?? 0;
+        const localBytes = recvBytesRef.current[idx] ?? 0;
+        const dc = dataChannelsRef.current.get(pid);
+        let ok = true;
+        let reason = '';
+        if (!meta) { ok = false; reason = 'meta-missing'; }
+        else if (typeof m.size === 'number' && localBytes !== m.size) { ok = false; reason = `size-mismatch ${localBytes}/${m.size}`; }
+        else if (typeof m.crc === 'number' && localCrc !== m.crc) { ok = false; reason = 'crc-mismatch'; }
+        if (ok && meta) {
+          const blob = new Blob(chunks, { type: meta.mimeType });
+          dlFile(blob, meta.name);
+        } else {
+          console.error('[Dropla.tr] integrity check failed:', meta?.name, reason);
+          showToast(`Dosya bozuk geldi: ${meta?.name ?? '?'} — yeniden gönderin`);
+        }
+        // ACK so the sender can move on. Best-effort send — channel may already be torn down.
+        try { dc?.send(JSON.stringify({ type: 'file-ack', index: idx, ok })); } catch {}
+        delete receivingBuffersRef.current[idx];
+        delete receivingMetaRef.current[idx];
+        delete recvCrcRef.current[idx];
+        delete recvBytesRef.current[idx];
+        if (currentRecvIndexRef.current === idx) currentRecvIndexRef.current = -1;
+      } else if (m.type === 'file-ack') {
+        const r = sendAckResolversRef.current.get(m.index);
+        if (r) { r(!!m.ok); sendAckResolversRef.current.delete(m.index); }
       } else if (m.type === 'transfer-complete') {
         stopTapAnim();
         showComplete('Alındı!');
       }
     } else {
-      const idx = Object.keys(receivingBuffersRef.current).pop();
-      if (idx !== undefined) {
-        receivingBuffersRef.current[idx].push(data);
-        const meta = receivingMetaRef.current[idx];
-        if (meta) {
-          const got = receivingBuffersRef.current[idx].reduce((a, b) => a + b.byteLength, 0);
-          const pct = Math.round(got / meta.size * 100);
-          updateProg(pct, meta.name);
-          updateTapProgress(pct, meta.name);
-        }
-      }
+      // Binary chunk — channel is ordered+reliable so it belongs to whichever file
+      // we're currently receiving (set by the most recent file-meta).
+      const idx = currentRecvIndexRef.current;
+      if (idx < 0 || !receivingMetaRef.current[idx]) return;
+      receivingBuffersRef.current[idx].push(data);
+      recvCrcRef.current[idx] = crc32Update(recvCrcRef.current[idx] ?? 0, data);
+      recvBytesRef.current[idx] = (recvBytesRef.current[idx] ?? 0) + data.byteLength;
+      const meta = receivingMetaRef.current[idx];
+      const pct = Math.round(recvBytesRef.current[idx] / meta.size * 100);
+      updateProg(pct, meta.name);
+      updateTapProgress(pct, meta.name);
     }
   }
 
-  // ─── Send files ───
+  // Wait for the channel buffer to drain — event-driven, no polling busy-loop.
+  function waitForBufferDrain(dc: RTCDataChannel): Promise<void> {
+    return new Promise(resolve => {
+      const onLow = () => { dc.removeEventListener('bufferedamountlow', onLow); resolve(); };
+      dc.addEventListener('bufferedamountlow', onLow);
+    });
+  }
+
+  // ─── Send files (streaming via slice() + per-chunk CRC32 + per-file ACK) ───
+  // Streaming is critical for iOS Safari: loading a full file via f.arrayBuffer()
+  // exhausts the ~250 MB per-tab memory ceiling and crashes the page mid-transfer.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function processSendFn(pid: string) {
     const dc = dataChannelsRef.current.get(pid);
     if (!dc || dc.readyState !== 'open') return;
     const total = sendQueueRef.current.reduce((a, f) => a + f.size, 0);
-    let sent = 0, lastProg = 0;
+    let sent = 0, lastProg = -1;
     for (let i = 0; i < sendQueueRef.current.length; i++) {
       const f = sendQueueRef.current[i];
-      dc.send(JSON.stringify({ type: 'file-meta', name: f.name, size: f.size, mimeType: f.type, index: i, total: sendQueueRef.current.length }));
-      const buf = await f.arrayBuffer();
+      dc.send(JSON.stringify({
+        type: 'file-meta', name: f.name, size: f.size, mimeType: f.type,
+        index: i, total: sendQueueRef.current.length,
+      }));
       let off = 0;
-      while (off < buf.byteLength) {
-        if (dc.bufferedAmount > 1048576) { await new Promise(r => setTimeout(r, 10)); continue; }
-        const end = Math.min(off + CHUNK, buf.byteLength);
-        const c = buf.slice(off, end);
-        dc.send(c);
+      let crc = 0;
+      const chunkSize = chunkSizeRef.current;
+      while (off < f.size) {
+        if (dc.readyState !== 'open') {
+          showToast('Bağlantı koptu — transfer durdu');
+          stopTapAnim();
+          return;
+        }
+        if (dc.bufferedAmount > BUFFER_HIGH) {
+          await waitForBufferDrain(dc);
+          continue;
+        }
+        const end = Math.min(off + chunkSize, f.size);
+        // Read this slice from disk only when we're about to send it — keeps memory flat.
+        const c = await f.slice(off, end).arrayBuffer();
+        try {
+          dc.send(c);
+        } catch (err) {
+          console.error('[Dropla.tr] dc.send failed:', err);
+          showToast('Gönderim hatası — yeniden deneyin');
+          stopTapAnim();
+          return;
+        }
+        crc = crc32Update(crc, c);
         off = end;
         sent += c.byteLength;
         const pct = Math.round(sent / total * 100);
-        if (pct !== lastProg) { lastProg = pct; updateProg(pct, f.name); updateTapProgress(pct, f.name); }
+        if (pct !== lastProg) {
+          lastProg = pct;
+          updateProg(pct, f.name);
+          updateTapProgress(pct, f.name);
+        }
       }
-      dc.send(JSON.stringify({ type: 'file-end', index: i }));
+      // Wait for the receiver to ACK this file before starting the next one.
+      // Safety timeout assumes-ok rather than hanging forever if ACK is lost.
+      const ackPromise = new Promise<boolean>(resolve => {
+        sendAckResolversRef.current.set(i, resolve);
+        setTimeout(() => {
+          if (sendAckResolversRef.current.has(i)) {
+            sendAckResolversRef.current.delete(i);
+            resolve(true);
+          }
+        }, ACK_TIMEOUT_MS);
+      });
+      try {
+        dc.send(JSON.stringify({ type: 'file-end', index: i, crc, size: f.size }));
+      } catch {
+        showToast('Bağlantı koptu — transfer tamamlanamadı');
+        stopTapAnim();
+        return;
+      }
+      const ok = await ackPromise;
+      if (!ok) showToast(`Alıcıda dosya bozuk: ${f.name}`);
     }
-    dc.send(JSON.stringify({ type: 'transfer-complete' }));
+    try { dc.send(JSON.stringify({ type: 'transfer-complete' })); } catch {}
     setTimeout(() => { stopTapAnim(); showComplete('Gönderildi!'); }, 400);
   }
 
