@@ -4,7 +4,7 @@
 
 🔗 **[www.drop.tr](https://www.dropla.tr)**
 
----
+
 
 ## Özellikler
 
