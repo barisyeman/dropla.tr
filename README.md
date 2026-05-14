@@ -1,4 +1,4 @@
-# Drop.tr
+#Drop.tr
 
 Ücretsiz, güvenli ve kayıtsız dosya paylaşım platformu. Dosyalar doğrudan cihazdan cihaza aktarılır — hiçbir sunucuya yüklenmez.
 
